@@ -5,26 +5,11 @@ ABC pipeline interfaces and customizations of the original nipype interfaces
 '''
 import warnings
 import os
-from shutil import copyfile
-import numpy as np
-from scipy.io import savemat
-import subprocess
-from nipype.interfaces.base import (Directory, TraitedSpec, BaseInterface,
-                                    DynamicTraitedSpec, traits, Undefined, 
-                                    isdefined, File, InputMultiPath, BaseInterfaceInputSpec)
-from nipype.interfaces.base import (CommandLineInputSpec, CommandLine,
-                                    OutputMultiPath)
-from nipype.interfaces.io import IOBase, add_traits
+from nipype.interfaces.base import TraitedSpec, traits, isdefined, File
+from nipype.interfaces.base import CommandLineInputSpec, CommandLine
 from nipype.interfaces.fsl.base import FSLCommand, FSLCommandInputSpec
-from nipype.interfaces.fsl.utils import ImageMaths
-from nipype.utils.filemanip import (split_filename, filename_to_list,
-                                    list_to_filename)
-
-from ginnipi_dwiqc.toolbox.computations import identify_b0s
 warn = warnings.warn
 warnings.filterwarnings('always', category=UserWarning)
-from nipype.utils.functions import getsource, create_function_from_source
-import ginnipi
 
 
 class AbcEddyInputSpec(FSLCommandInputSpec):
