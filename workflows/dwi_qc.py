@@ -14,46 +14,17 @@ from nipype.interfaces.fsl.utils import Split
 from nipype.interfaces.fsl.maths import ApplyMask
 from nipype.interfaces.afni.preprocess import OutlierCount
 from nipype.algorithms.confounds import TSNR
-from ginnipi.interfaces.custom import SagQCplot, SNR_QCplot, MaskOverlayQCplot
-from ginnipi.toolbox.flow import (getElementFromList, writeIdentity,
-                                  makeFStringElementFromFnameList)
-from ginnipi.toolbox.computations import compute_voxel_percentage
-from ginnipi.toolbox.plotting_tools import plot_img_intensity_distribution
-from ginnipi.toolbox.assessors import (createDWIshellNS_QCxml,
-                                       createDWIshell_QCxml,
-                                       createDTI_QCxml)
-from ginnipi.toolbox.qualitycontrol_dwi import make_dwi_qc_traceplot
-
-
-def get_bval_per_frame(bvalsFilename, bval_list, delimiter=None, out_file=None):
-    """
-    Get intended bval for each frame and save with numpy savetxt.
-
-    {frame: [frame index],
-     bval: [intended bval]}
-
-    """
-    import os.path as op
-    import numpy as np
-
-    if not op.exists(bvalsFilename):
-        raise RuntimeError('bvals file not exist:' + bvalsFilename)
-
-    if out_file is None:
-        out_file = op.join(op.split(bvalsFilename)[0], 'bval_per_frame.txt')
-
-    bvals = np.loadtxt(bvalsFilename, delimiter=delimiter)
-    bStep = np.array(bval_list)
-
-    bval_per_frame = []
-    for i in range(0, bvals.size):
-        ind = np.argmin(abs(bvals[i] - bStep))
-        bval_per_frame.append(bval_list[ind])
-
-    # save as txt
-    np.savetxt(out_file, np.asarray(bval_per_frame))
-
-    return out_file
+from ginnipi_dwiqc.interfaces.custom import (SagQCplot, SNR_QCplot,
+                                             MaskOverlayQCplot)
+from ginnipi_dwiqc.toolbox.flow import (getElementFromList, writeIdentity,
+                                        makeFStringElementFromFnameList)
+from ginnipi_dwiqc.toolbox.computations import (compute_voxel_percentage,
+                                                get_bval_per_frame)
+from ginnipi_dwiqc.toolbox.plotting_tools import plot_img_intensity_distribution
+from ginnipi_dwiqc.toolbox.assessors import (createDWIshellNS_QCxml,
+                                             createDWIshell_QCxml,
+                                             createDTI_QCxml)
+from ginnipi_dwiqc.toolbox.qualitycontrol_dwi import make_dwi_qc_traceplot
 
 
 def genDWIqcPipeline(name,
